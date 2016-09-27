@@ -32,7 +32,7 @@ trait CacheManagerFixtures extends MockitoSugar {
   def fixture = new {
     val mockCacheAPI = mock[CacheAPI]
     val mockCacheAPIWithCachedData = mock[CacheAPI]
-    val restCacheEndPoint = "http://www.google.com"
+    val restCacheEndPoint = "http://www.example.com"
     val cacheKey = ""
     val mockWSClient = mock[WSClient]
     val ttl = 10
