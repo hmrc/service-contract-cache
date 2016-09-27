@@ -18,8 +18,10 @@ package uk.gov.hmrc.play.scc
 
 import play.api.cache.CacheAPI
 import play.api.http.Status._
+import play.api.libs.json._
 import play.api.libs.ws._
 
+import scala.language.implicitConversions
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -27,11 +29,12 @@ import scala.concurrent.Future
   * Created by abhishek on 23/09/16.
   */
 class CacheManager(cache: CacheAPI, ws: WSClient) {
-  def get(restCacheEndPoint: String, cacheKey: String, ttl: Int): Future[String] = {
+
+  def get[T](restCacheEndPoint: String, cacheKey: String, ttl: Int): Future[T] = {
     cache.get(cacheKey) match {
       //Retrieve data from Cache
-      case Some(data: String) =>
-        Future.successful(data)
+      case Some(data) =>
+        Future.successful(data.asInstanceOf[T])
       //Call the endpoint and store the data in cache if successful
       case None =>
         ws.url(restCacheEndPoint)
@@ -44,8 +47,13 @@ class CacheManager(cache: CacheAPI, ws: WSClient) {
             case response if response.status == NO_CONTENT =>
               Future.failed(new EndPoint204Exception)
             case response if response.status == OK =>
-              cache.set(cacheKey, response.body, ttl)
-              Future.successful(response.body)
+              val json = response.json
+              val value = (json \ cacheKey) match {
+                case JsNumber(n) if (n.isValidInt) => n.bigDecimal.intValue()
+                case JsString(s) => s.toString
+              }
+              cache.set(cacheKey, value.asInstanceOf[T], ttl)
+              Future.successful(value.asInstanceOf[T])
             case response =>
               Future.failed(new EndPointAllOtherException(response.body))
           }

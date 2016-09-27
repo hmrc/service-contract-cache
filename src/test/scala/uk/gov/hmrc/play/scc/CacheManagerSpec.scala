@@ -20,6 +20,8 @@ import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FlatSpec, Matchers}
+import play.api.libs.json.JsNumber
+
 import scala.concurrent.Future
 
 /**
@@ -41,7 +43,7 @@ class CacheManagerSpec extends FlatSpec
         override def status = 500
       }))
 
-    val cacheResult = cacheManager.get("www.google.com","key",100)
+    val cacheResult = cacheManager.get[Int]("www.example.com", "key", 100)
     cacheResult.failed.futureValue shouldBe a[EndPoint500Exception]
   }
 
@@ -51,7 +53,7 @@ class CacheManagerSpec extends FlatSpec
         override def status = 404
       }))
 
-    val cacheResult = cacheManager.get("www.google.com","key",100)
+    val cacheResult = cacheManager.get[Int]("www.example.com", "key", 100)
     cacheResult.failed.futureValue shouldBe a[EndPoint404Exception]
   }
 
@@ -61,7 +63,7 @@ class CacheManagerSpec extends FlatSpec
         override def status = 204
       }))
 
-    val cacheResult = cacheManager.get("www.google.com","key",100)
+    val cacheResult = cacheManager.get[Int]("www.example.com", "key", 100)
     cacheResult.failed.futureValue shouldBe a[EndPoint204Exception]
   }
 
@@ -73,7 +75,7 @@ class CacheManagerSpec extends FlatSpec
         override def body = "Service Unavailable"
       }))
 
-    val cacheResult = cacheManager.get("www.google.com","key",100)
+    val cacheResult = cacheManager.get[String]("www.example.com", "key", 100)
     cacheResult.failed.futureValue shouldBe a[EndPointAllOtherException]
     cacheResult.failed.futureValue.getMessage shouldBe "Service Unavailable"
 
@@ -84,20 +86,26 @@ class CacheManagerSpec extends FlatSpec
       .thenReturn(Future.successful(new Response {
         override def status = 200
 
-        override def body = "123"
+        override def json = jsonMessageJson
       }))
 
-    val cacheResult = cacheManager.get("www.google.com","key",100)
-    whenReady(cacheResult) {
-      res => res.toString shouldBe "123"
+    val cacheResultInt = cacheManager.get[String]("www.example.com", "name", 100)
+    whenReady(cacheResultInt) {
+      res => res shouldBe "foo"
+    }
+
+    val cacheResultString = cacheManager.get[Int]("www.example.com", "age", 100)
+    whenReady(cacheResultString) {
+      res =>
+        res shouldBe 25
     }
   }
 
   "CacheManager#get" should "return content from Cache" in {
 
-    val cacheResult = cacheManagerWithCachedData.get("www.google.com","key",100)
+    val cacheResult = cacheManagerWithCachedData.get[Int]("www.example.com", "age", 100)
     whenReady(cacheResult) {
-      res => res.toString shouldBe "123"
+      res => res shouldBe 25
     }
   }
 }
