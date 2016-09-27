@@ -16,15 +16,13 @@
 
 package uk.gov.hmrc.play.scc
 
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.{FlatSpec, Matchers}
-
 /**
-  * Created by abhishek on 23/09/16.
+  * Created by abhishek on 26/09/16.
   */
-class CacheProviderSpec extends FlatSpec with Matchers with ScalaFutures with MockitoSugar{
-  "CacheProvider#helloCache" should "return 1" in {
-    CacheProvider.helloCache() shouldBe 1
-  }
-}
+class EndPoint500Exception(msg: String) extends Exception(msg) with util.control.NoStackTrace
+
+class EndPoint404Exception(msg: String) extends Exception(msg) with util.control.NoStackTrace
+
+class EndPoint204Exception(msg: String) extends Exception(msg) with util.control.NoStackTrace
+
+class EndPointAllOtherException(msg: String) extends Exception(msg)
