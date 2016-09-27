@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/hmrc/service-contract-cache.svg?branch=master)](https://travis-ci.org/hmrc/service-contract-cache) [ ![Download](https://api.bintray.com/packages/hmrc/releases/service-contract-cache/images/download.svg) ](https://bintray.com/hmrc/releases/service-contract-cache/_latestVersion)
 
-This is a placeholder README.md for a new repository
+service-contract-cache is a scala library that handle calls to RESTful end points and caches the appropriate result.
 
 ### License
 
