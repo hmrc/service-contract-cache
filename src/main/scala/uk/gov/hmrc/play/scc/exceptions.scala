@@ -19,10 +19,10 @@ package uk.gov.hmrc.play.scc
 /**
   * Created by abhishek on 26/09/16.
   */
-class EndPoint500Exception(msg: String) extends Exception(msg) with util.control.NoStackTrace
+class EndPoint500Exception extends util.control.NoStackTrace
 
-class EndPoint404Exception(msg: String) extends Exception(msg) with util.control.NoStackTrace
+class EndPoint404Exception extends util.control.NoStackTrace
 
-class EndPoint204Exception(msg: String) extends Exception(msg) with util.control.NoStackTrace
+class EndPoint204Exception extends util.control.NoStackTrace
 
 class EndPointAllOtherException(msg: String) extends Exception(msg)

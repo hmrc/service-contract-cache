@@ -23,7 +23,6 @@ import play.api.cache.CacheAPI
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSClient, WSCookie, WSRequestHolder, WSResponse}
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.Elem
 
 /**
@@ -37,8 +36,8 @@ trait CacheManagerFixtures extends MockitoSugar {
     val cacheKey = ""
     val mockWSClient = mock[WSClient]
     val ttl = 10
-    val cacheManager = new CacheManager(mockCacheAPI, restCacheEndPoint, cacheKey, mockWSClient, ttl)
-    val cacheManagerWithCachedData = new CacheManager(mockCacheAPIWithCachedData, restCacheEndPoint, cacheKey, mockWSClient, ttl)
+    val cacheManager = new CacheManager(mockCacheAPI, restCacheEndPoint, mockWSClient, ttl)
+    val cacheManagerWithCachedData = new CacheManager(mockCacheAPIWithCachedData, restCacheEndPoint, mockWSClient, ttl)
     val mockWSRequestHolder = mock[WSRequestHolder]
 
     when(mockCacheAPIWithCachedData.get(Matchers.any()))

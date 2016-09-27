@@ -22,7 +22,6 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
 
 /**
   * Created by abhishek on 23/09/16.
@@ -43,9 +42,8 @@ class CacheManagerSpec extends FlatSpec
         override def status = 500
       }))
 
-    val cacheResult = cacheManager.get[String]
+    val cacheResult = cacheManager.get("key")
     cacheResult.failed.futureValue shouldBe a[EndPoint500Exception]
-    cacheResult.failed.futureValue.getMessage shouldBe HttpStatus.InternalServer.toString
   }
 
   "CacheManager#get" should "return EndPointInternalServerErrorException when endpoint returned '404 - Not Found'" in {
@@ -54,22 +52,20 @@ class CacheManagerSpec extends FlatSpec
         override def status = 404
       }))
 
-    val cacheResult = cacheManager.get[String]
+    val cacheResult = cacheManager.get("key")
     cacheResult.failed.futureValue shouldBe a[EndPoint404Exception]
-    cacheResult.failed.futureValue.getMessage shouldBe HttpStatus.NotFound.toString
-
   }
+
   "CacheManager#get" should "return EndPointNoContentException when endpoint returned '204 - No Content'" in {
     when(mockWSRequestHolder.get())
       .thenReturn(Future.successful(new Response {
         override def status = 204
       }))
 
-    val cacheResult = cacheManager.get[String]
+    val cacheResult = cacheManager.get("key")
     cacheResult.failed.futureValue shouldBe a[EndPoint204Exception]
-    cacheResult.failed.futureValue.getMessage shouldBe HttpStatus.NoContent.toString
-
   }
+
   "CacheManager#get" should "return EndPointAllOtherException when endpoint returned '503 - Service Unavailable'" in {
     when(mockWSRequestHolder.get())
       .thenReturn(Future.successful(new Response {
@@ -78,11 +74,12 @@ class CacheManagerSpec extends FlatSpec
         override def body = "Service Unavailable"
       }))
 
-    val cacheResult = cacheManager.get[String]
+    val cacheResult = cacheManager.get("key")
     cacheResult.failed.futureValue shouldBe a[EndPointAllOtherException]
     cacheResult.failed.futureValue.getMessage shouldBe "Service Unavailable"
 
   }
+
   "CacheManager#get" should "return body content when endpoint returned '200 - Ok'" in {
     when(mockWSRequestHolder.get())
       .thenReturn(Future.successful(new Response {
@@ -91,7 +88,7 @@ class CacheManagerSpec extends FlatSpec
         override def body = "123"
       }))
 
-    val cacheResult = cacheManager.get[String]
+    val cacheResult = cacheManager.get("key")
     whenReady(cacheResult) {
       res => res.toString shouldBe "123"
     }
@@ -99,7 +96,7 @@ class CacheManagerSpec extends FlatSpec
 
   "CacheManager#get" should "return content from Cache" in {
 
-    val cacheResult = cacheManagerWithCachedData.get[String]
+    val cacheResult = cacheManagerWithCachedData.get("key")
     whenReady(cacheResult) {
       res => res.toString shouldBe "123"
     }
