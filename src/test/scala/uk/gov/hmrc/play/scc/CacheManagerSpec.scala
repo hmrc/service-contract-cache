@@ -20,7 +20,6 @@ import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FlatSpec, Matchers}
-
 import scala.concurrent.Future
 
 /**
@@ -42,7 +41,7 @@ class CacheManagerSpec extends FlatSpec
         override def status = 500
       }))
 
-    val cacheResult = cacheManager.get("key")
+    val cacheResult = cacheManager.get("www.google.com","key",100)
     cacheResult.failed.futureValue shouldBe a[EndPoint500Exception]
   }
 
@@ -52,7 +51,7 @@ class CacheManagerSpec extends FlatSpec
         override def status = 404
       }))
 
-    val cacheResult = cacheManager.get("key")
+    val cacheResult = cacheManager.get("www.google.com","key",100)
     cacheResult.failed.futureValue shouldBe a[EndPoint404Exception]
   }
 
@@ -62,7 +61,7 @@ class CacheManagerSpec extends FlatSpec
         override def status = 204
       }))
 
-    val cacheResult = cacheManager.get("key")
+    val cacheResult = cacheManager.get("www.google.com","key",100)
     cacheResult.failed.futureValue shouldBe a[EndPoint204Exception]
   }
 
@@ -74,7 +73,7 @@ class CacheManagerSpec extends FlatSpec
         override def body = "Service Unavailable"
       }))
 
-    val cacheResult = cacheManager.get("key")
+    val cacheResult = cacheManager.get("www.google.com","key",100)
     cacheResult.failed.futureValue shouldBe a[EndPointAllOtherException]
     cacheResult.failed.futureValue.getMessage shouldBe "Service Unavailable"
 
@@ -88,7 +87,7 @@ class CacheManagerSpec extends FlatSpec
         override def body = "123"
       }))
 
-    val cacheResult = cacheManager.get("key")
+    val cacheResult = cacheManager.get("www.google.com","key",100)
     whenReady(cacheResult) {
       res => res.toString shouldBe "123"
     }
@@ -96,7 +95,7 @@ class CacheManagerSpec extends FlatSpec
 
   "CacheManager#get" should "return content from Cache" in {
 
-    val cacheResult = cacheManagerWithCachedData.get("key")
+    val cacheResult = cacheManagerWithCachedData.get("www.google.com","key",100)
     whenReady(cacheResult) {
       res => res.toString shouldBe "123"
     }

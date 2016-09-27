@@ -26,12 +26,8 @@ import scala.concurrent.Future
 /**
   * Created by abhishek on 23/09/16.
   */
-class CacheManager(cache: CacheAPI,
-                   restCacheEndPoint: String,
-                   ws: WSClient,
-                   ttl: Int) {
-
-  def get(cacheKey: String): Future[String] = {
+class CacheManager(cache: CacheAPI, ws: WSClient) {
+  def get(restCacheEndPoint: String, cacheKey: String, ttl: Int): Future[String] = {
     cache.get(cacheKey) match {
       //Retrieve data from Cache
       case Some(data: String) =>
