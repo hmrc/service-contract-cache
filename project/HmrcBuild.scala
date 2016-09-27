@@ -64,7 +64,6 @@ private object AppDependencies {
   val compile = Seq(
     "com.typesafe.play" %% "play" % PlayVersion.current,
     cache,
-    "com.google.inject" % "guice" % "4.0",
     ws
   )
 
