@@ -25,6 +25,4 @@ class EndPoint404Exception extends util.control.NoStackTrace
 
 class EndPoint204Exception extends util.control.NoStackTrace
 
-class InvalidFormatException extends util.control.NoStackTrace
-
 class EndPointAllOtherException(msg: String) extends Exception(msg)

@@ -47,6 +47,7 @@ object HmrcBuild extends Build {
     import scoverage.ScoverageSbtPlugin._
     Seq(
       // Semicolon-separated list of regexs matching classes to exclude
+      ScoverageKeys.coverageEnabled := true,
       ScoverageKeys.coverageExcludedPackages := "<empty>;.*BuildInfo*.",
       ScoverageKeys.coverageMinimum := 95,
       ScoverageKeys.coverageFailOnMinimum := true,
