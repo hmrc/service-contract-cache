@@ -27,4 +27,4 @@ class EndPoint204Exception extends util.control.NoStackTrace
 
 class UnSupportedDataType extends util.control.NoStackTrace
 
-class EndPointAllOtherException(msg: String) extends Exception(msg)
+class EndPointAllOtherExceptions(msg: String) extends Exception(msg)

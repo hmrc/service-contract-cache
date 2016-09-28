@@ -29,14 +29,13 @@ import scala.util.{Failure, Success}
 /**
   * Created by abhishek on 23/09/16.
   */
-class CacheManager(cache: CacheAPI, ws: WSClient) {
+class CacheManager(restCacheEndPoint: String, cache: CacheAPI, ws: WSClient) {
 
-  def get[T](restCacheEndPoint: String, cacheKey: String, ttl: Int): Future[T] = {
+  def get[T](resource: String, attribute: String, timeToLive: Int): Future[T] = {
+    val cacheKey = restCacheEndPoint + "/" + resource + "/" + attribute
     cache.get(cacheKey) match {
-      //Retrieve data from Cache
       case Some(data) =>
         Future.successful(data.asInstanceOf[T])
-      //Call the endpoint and store the data in cache if successful
       case None =>
         ws.url(restCacheEndPoint)
           .get()
@@ -48,19 +47,19 @@ class CacheManager(cache: CacheAPI, ws: WSClient) {
             case response if response.status == NO_CONTENT =>
               Future.failed(new EndPoint204Exception)
             case response if response.status == OK =>
-              val value = (response.json \ cacheKey) match {
-                case JsNumber(n) if (n.isValidInt) => Future.successful(n.bigDecimal.intValue())
+              val value = response.json \ attribute match {
+                case JsNumber(n) if n.isValidInt => Future.successful(n.bigDecimal.intValue())
                 case JsString(s) => Future.successful(s)
                 case JsBoolean(b) => Future.successful(b)
-                case _ =>
+                case res =>
                   Future.failed(new UnSupportedDataType)
               }
               value.map(value => {
-                cache.set(cacheKey, value.asInstanceOf[T], ttl)
+                cache.set(cacheKey, value.asInstanceOf[T], timeToLive)
                 value.asInstanceOf[T]
               })
             case response =>
-              Future.failed(new EndPointAllOtherException(response.body))
+              Future.failed(new EndPointAllOtherExceptions(response.body))
           }
     }
   }

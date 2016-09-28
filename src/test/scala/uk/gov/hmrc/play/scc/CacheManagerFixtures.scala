@@ -36,8 +36,8 @@ trait CacheManagerFixtures extends MockitoSugar {
     val cacheKey = ""
     val mockWSClient = mock[WSClient]
     val ttl = 10
-    val cacheManager = new CacheManager(mockCacheAPI, mockWSClient)
-    val cacheManagerWithCachedData = new CacheManager(mockCacheAPIWithCachedData, mockWSClient)
+    val cacheManager = new CacheManager(restCacheEndPoint, mockCacheAPI, mockWSClient)
+    val cacheManagerWithCachedData = new CacheManager(restCacheEndPoint, mockCacheAPIWithCachedData, mockWSClient)
     val mockWSRequestHolder = mock[WSRequestHolder]
     val jsonMessageString =
       """

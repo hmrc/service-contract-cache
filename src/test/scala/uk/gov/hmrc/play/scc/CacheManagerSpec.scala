@@ -75,8 +75,8 @@ class CacheManagerSpec extends FlatSpec
         override def body = "Service Unavailable"
       }))
 
-    val cacheResult = cacheManager.get[String]("www.example.com", "key", 100)
-    cacheResult.failed.futureValue shouldBe a[EndPointAllOtherException]
+    val cacheResult = cacheManager.get[String]("resource", "key", 100)
+    cacheResult.failed.futureValue shouldBe a[EndPointAllOtherExceptions]
     cacheResult.failed.futureValue.getMessage shouldBe "Service Unavailable"
 
   }
@@ -89,31 +89,31 @@ class CacheManagerSpec extends FlatSpec
         override def json = jsonMessageJson
       }))
 
-    val cacheResultInt = cacheManager.get[String]("www.example.com", "name", 100)
+    val cacheResultInt = cacheManager.get[String]("resource", "name", 100)
     whenReady(cacheResultInt) {
       res => res shouldBe "foo"
     }
 
-    val cacheResultString = cacheManager.get[Int]("www.example.com", "age", 100)
+    val cacheResultString = cacheManager.get[Int]("resource", "age", 100)
     whenReady(cacheResultString) {
       res =>
         res shouldBe 25
     }
 
-    val cacheResultBoolean = cacheManager.get[Boolean]("www.example.com", "isMinor", 100)
+    val cacheResultBoolean = cacheManager.get[Boolean]("resource", "isMinor", 100)
     whenReady(cacheResultBoolean) {
       res =>
         res shouldBe false
     }
 
-    val cacheResultException = cacheManager.get[Int]("www.example.com", "address", 100)
+    val cacheResultException = cacheManager.get[Int]("resource", "address", 100)
     cacheResultException.failed.futureValue shouldBe a[UnSupportedDataType]
 
   }
 
   "CacheManager#get" should "return content from Cache" in {
 
-    val cacheResult = cacheManagerWithCachedData.get[Int]("www.example.com", "age", 100)
+    val cacheResult = cacheManagerWithCachedData.get[Int]("resource", "age", 100)
     whenReady(cacheResult) {
       res => res shouldBe 25
     }
