@@ -47,8 +47,7 @@ class CacheManager(cache: CacheAPI, ws: WSClient) {
             case response if response.status == NO_CONTENT =>
               Future.failed(new EndPoint204Exception)
             case response if response.status == OK =>
-              val json = response.json
-              val value = (json \ cacheKey) match {
+              val value = (response.json \ cacheKey) match {
                 case JsNumber(n) if (n.isValidInt) => n.bigDecimal.intValue()
                 case JsString(s) => s.toString
               }
