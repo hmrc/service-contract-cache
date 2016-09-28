@@ -99,6 +99,16 @@ class CacheManagerSpec extends FlatSpec
       res =>
         res shouldBe 25
     }
+
+    val cacheResultBoolean = cacheManager.get[Boolean]("www.example.com", "isMinor", 100)
+    whenReady(cacheResultBoolean) {
+      res =>
+        res shouldBe false
+    }
+
+    val cacheResultException = cacheManager.get[Int]("www.example.com", "address", 100)
+    cacheResultException.failed.futureValue shouldBe a[UnSupportedDataType]
+
   }
 
   "CacheManager#get" should "return content from Cache" in {

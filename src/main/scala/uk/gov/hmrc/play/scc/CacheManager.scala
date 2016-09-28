@@ -24,6 +24,7 @@ import play.api.libs.ws._
 import scala.language.implicitConversions
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 /**
   * Created by abhishek on 23/09/16.
@@ -48,11 +49,16 @@ class CacheManager(cache: CacheAPI, ws: WSClient) {
               Future.failed(new EndPoint204Exception)
             case response if response.status == OK =>
               val value = (response.json \ cacheKey) match {
-                case JsNumber(n) if (n.isValidInt) => n.bigDecimal.intValue()
-                case JsString(s) => s.toString
+                case JsNumber(n) if (n.isValidInt) => Future.successful(n.bigDecimal.intValue())
+                case JsString(s) => Future.successful(s)
+                case JsBoolean(b) => Future.successful(b)
+                case _ =>
+                  Future.failed(new UnSupportedDataType)
               }
-              cache.set(cacheKey, value.asInstanceOf[T], ttl)
-              Future.successful(value.asInstanceOf[T])
+              value.map(value => {
+                cache.set(cacheKey, value.asInstanceOf[T], ttl)
+                value.asInstanceOf[T]
+              })
             case response =>
               Future.failed(new EndPointAllOtherException(response.body))
           }

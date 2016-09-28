@@ -44,7 +44,8 @@ trait CacheManagerFixtures extends MockitoSugar {
          {
           "name": "foo",
           "age": 25,
-          "address": "foo bar"
+          "isMinor": false,
+          "address": ["foo", "bar"]
           }
       """
 
