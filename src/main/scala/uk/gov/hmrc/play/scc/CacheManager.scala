@@ -18,23 +18,24 @@ package uk.gov.hmrc.play.scc
 
 import play.api.cache.CacheAPI
 import play.api.http.Status._
+import play.api.libs.json._
 import play.api.libs.ws._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.language.implicitConversions
 
 /**
   * Created by abhishek on 23/09/16.
   */
-class CacheManager(cache: CacheAPI, ws: WSClient) {
-  def get(restCacheEndPoint: String, cacheKey: String, ttl: Int): Future[String] = {
+class CacheManager(restCacheEndPoint: String, cache: CacheAPI, ws: WSClient, timeToLive: Int) {
+
+  def get[T](resource: String, attribute: String): Future[T] = {
+    val cacheKey = restCacheEndPoint + "/" + resource + "/" + attribute
     cache.get(cacheKey) match {
-      //Retrieve data from Cache
-      case Some(data: String) =>
-        Future.successful(data)
-      //Call the endpoint and store the data in cache if successful
+      case Some(data) =>
+        Future.successful(data.asInstanceOf[T])
       case None =>
-        ws.url(restCacheEndPoint)
+        ws.url(cacheKey)
           .get()
           .flatMap {
             case response if response.status == INTERNAL_SERVER_ERROR =>
@@ -44,10 +45,18 @@ class CacheManager(cache: CacheAPI, ws: WSClient) {
             case response if response.status == NO_CONTENT =>
               Future.failed(new EndPoint204Exception)
             case response if response.status == OK =>
-              cache.set(cacheKey, response.body, ttl)
-              Future.successful(response.body)
+              val value = response.json \ attribute match {
+                case JsNumber(n) if n.isValidInt => Future.successful(n.bigDecimal.intValue())
+                case JsString(s) => Future.successful(s)
+                case JsBoolean(b) => Future.successful(b)
+                case res => Future.failed(new UnSupportedDataType)
+              }
+              value.map(value => {
+                cache.set(cacheKey, value.asInstanceOf[T], timeToLive)
+                value.asInstanceOf[T]
+              })
             case response =>
-              Future.failed(new EndPointAllOtherException(response.body))
+              Future.failed(new EndPointAllOtherExceptions(response.body))
           }
     }
   }
