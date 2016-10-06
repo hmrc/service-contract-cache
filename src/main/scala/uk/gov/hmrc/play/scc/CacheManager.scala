@@ -29,8 +29,9 @@ import scala.language.implicitConversions
   */
 class CacheManager(restCacheEndPoint: String, cache: CacheAPI, ws: WSClient, timeToLive: Int) {
 
-  def get[T](resource: String, attribute: String): Future[T] = {
-    val cacheKey = restCacheEndPoint + "/" + resource + "/" + attribute
+  def get[T](resource: String, attribute: Option[String] = None)(implicit read: Reads[T]): Future[T] = {
+    val cacheKey = restCacheEndPoint + "/" + resource + "/" + attribute.getOrElse("")
+    println("----" + cacheKey)
     cache.get(cacheKey) match {
       case Some(data) =>
         Future.successful(data.asInstanceOf[T])
@@ -45,16 +46,24 @@ class CacheManager(restCacheEndPoint: String, cache: CacheAPI, ws: WSClient, tim
             case response if response.status == NO_CONTENT =>
               Future.failed(new EndPoint204Exception)
             case response if response.status == OK =>
-              val value = response.json \ attribute match {
-                case JsNumber(n) if n.isValidInt => Future.successful(n.bigDecimal.intValue())
-                case JsString(s) => Future.successful(s)
-                case JsBoolean(b) => Future.successful(b)
-                case res => Future.failed(new UnSupportedDataType)
+              if (attribute.isEmpty) {
+                cache.set(cacheKey, response.json.asInstanceOf[T], timeToLive)
+                Future {
+                  response.json.validate[T].get
+                }
+              } else {
+                val value = response.json \ attribute.get match {
+                  case JsNumber(n) if n.isValidInt => Future.successful(n.bigDecimal.intValue())
+                  case JsString(s) => Future.successful(s)
+                  case JsBoolean(b) => Future.successful(b)
+                  case JsObject(c) => Future.successful(c)
+                  case res => Future.failed(new UnSupportedDataType)
+                }
+                value.map(value => {
+                  cache.set(cacheKey, value.asInstanceOf[T], timeToLive)
+                  value.asInstanceOf[T]
+                })
               }
-              value.map(value => {
-                cache.set(cacheKey, value.asInstanceOf[T], timeToLive)
-                value.asInstanceOf[T]
-              })
             case response =>
               Future.failed(new EndPointAllOtherExceptions(response.body))
           }

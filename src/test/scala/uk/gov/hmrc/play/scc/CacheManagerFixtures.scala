@@ -20,9 +20,9 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import play.api.cache.CacheAPI
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSCookie, WSRequestHolder, WSResponse}
-
+import play.api.libs.functional.syntax._
 import scala.xml.Elem
 
 /**
@@ -49,6 +49,12 @@ trait CacheManagerFixtures extends MockitoSugar {
           }
       """
 
+    implicit val fooBarReads: Reads[FooBar] = (
+      (JsPath \ "name").read[String] and
+        (JsPath \ "age").read[Int] and
+        (JsPath \ "isMinor").read[Boolean]
+      ) (FooBar.apply _)
+
     val jsonMessageJson = Json.parse(jsonMessageString).as[JsObject]
 
     when(mockCacheAPIWithCachedData.get(Matchers.any()))
@@ -63,6 +69,7 @@ trait CacheManagerFixtures extends MockitoSugar {
   }
 }
 
+case class FooBar(name: String, age: Int, isMinor: Boolean)
 
 class Response extends WSResponse {
   override def allHeaders: Map[String, Seq[String]] = ???
