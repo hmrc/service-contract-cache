@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.play.scc
 
-import play.api.cache.CacheAPI
+import play.cache.CacheApi
 import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws._
@@ -27,7 +27,7 @@ import scala.language.implicitConversions
 /**
   * Created by abhishek on 23/09/16.
   */
-class CacheManager(restCacheEndPoint: String, cache: CacheAPI, ws: WSClient, timeToLive: Int) {
+class CacheManager(restCacheEndPoint: String, cache: CacheApi, ws: WSClient, timeToLive: Int) {
 
   def get[T](resource: String, attribute: Option[String] = None)(implicit read: Reads[T]): Future[T] = {
     val cacheKey = restCacheEndPoint + "/" + resource + "/" + attribute.getOrElse("")

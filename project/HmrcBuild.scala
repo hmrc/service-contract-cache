@@ -58,7 +58,7 @@ object HmrcBuild extends Build {
 
 private object AppDependencies {
 
-  import play.PlayImport._
+  import play.sbt.PlayImport._
   import play.core.PlayVersion
 
   val compile = Seq(
@@ -78,7 +78,8 @@ private object AppDependencies {
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.scalatest" %% "scalatest" % "2.2.4" % scope,
         "org.pegdown" % "pegdown" % "1.5.0" % scope,
-        "org.scalacheck" %% "scalacheck" % "1.12.2" % scope
+        "org.scalacheck" %% "scalacheck" % "1.12.2" % scope,
+        "org.mockito" % "mockito-core" % "2.2.8" % scope
       )
     }.test
   }
