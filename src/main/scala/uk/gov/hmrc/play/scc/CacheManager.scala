@@ -31,7 +31,7 @@ class CacheManager(restCacheEndPoint: String, cache: CacheApi, ws: WSClient, tim
 
   def get[T](resource: String, attribute: Option[String] = None)(implicit read: Reads[T]): Future[T] = {
     val cacheKey = restCacheEndPoint + "/" + resource + "/" + attribute.getOrElse("")
-    cache.get(cacheKey) match {
+    cache.get[T](cacheKey) match {
       case Some(data) =>
         Future.successful(data.asInstanceOf[T])
       case None =>
@@ -52,11 +52,18 @@ class CacheManager(restCacheEndPoint: String, cache: CacheApi, ws: WSClient, tim
                 }
               } else {
                 val value = response.json \ attribute.get match {
-                  case JsNumber(n) if n.isValidInt => Future.successful(n.bigDecimal.intValue())
-                  case JsString(s) => Future.successful(s)
-                  case JsBoolean(b) => Future.successful(b)
-                  case JsObject(c) => Future.successful(c)
-                  case res => Future.failed(new UnSupportedDataType)
+                  case JsDefined(res: JsValue) => {
+                    res match {
+                      case JsNumber(n) if n.isValidInt => Future.successful(n.bigDecimal.intValue())
+                      case JsString(s) => Future.successful(s)
+                      case JsBoolean(b) => Future.successful(b)
+                      case JsObject(c) => Future.successful(c)
+                      case res => Future.failed(new UnSupportedDataType)
+                    }
+                  }
+                  case _ => {
+                    Future.failed(new UnSupportedDataType)
+                  }
                 }
                 value.map(value => {
                   cache.set(cacheKey, value.asInstanceOf[T], timeToLive)

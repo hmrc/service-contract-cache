@@ -17,7 +17,7 @@
 package uk.gov.hmrc.play.scc
 
 import akka.util.ByteString
-import org.mockito.Matchers
+import org.mockito.{ArgumentMatchers, Matchers}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import play.cache.CacheApi
@@ -59,13 +59,13 @@ trait CacheManagerFixtures extends MockitoSugar {
 
     val jsonMessageJson = Json.parse(jsonMessageString).as[JsObject]
 
-    when(mockCacheAPIWithCachedData.get(Matchers.any()))
+    when(mockCacheAPIWithCachedData.get(ArgumentMatchers.any()))
       .thenReturn(Some(25))
 
 
-    when(mockCacheAPI.get(Matchers.any()))
+    when(mockCacheAPI.get(ArgumentMatchers.any()))
       .thenReturn(None)
-    when(mockWSClient.url(Matchers.any()))
+    when(mockWSClient.url(ArgumentMatchers.any()))
       .thenReturn(mockWSRequestHolder)
 
   }
