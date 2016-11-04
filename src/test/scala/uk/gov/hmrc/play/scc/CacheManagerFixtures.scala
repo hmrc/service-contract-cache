@@ -16,13 +16,15 @@
 
 package uk.gov.hmrc.play.scc
 
-import org.mockito.Matchers
+import akka.util.ByteString
+import org.mockito.{ArgumentMatchers, Matchers}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import play.api.cache.CacheAPI
+import play.cache.CacheApi
 import play.api.libs.json._
-import play.api.libs.ws.{WSClient, WSCookie, WSRequestHolder, WSResponse}
+import play.api.libs.ws.{WSClient, WSCookie, WSRequest, WSResponse}
 import play.api.libs.functional.syntax._
+
 import scala.xml.Elem
 
 /**
@@ -30,15 +32,15 @@ import scala.xml.Elem
   */
 trait CacheManagerFixtures extends MockitoSugar {
   def fixture = new {
-    val mockCacheAPI = mock[CacheAPI]
-    val mockCacheAPIWithCachedData = mock[CacheAPI]
+    val mockCacheAPI = mock[CacheApi]
+    val mockCacheAPIWithCachedData = mock[CacheApi]
     val restCacheEndPoint = "http://www.example.com"
     val cacheKey = ""
     val mockWSClient = mock[WSClient]
     val ttl = 10
     val cacheManager = new CacheManager(restCacheEndPoint, mockCacheAPI, mockWSClient, ttl)
     val cacheManagerWithCachedData = new CacheManager(restCacheEndPoint, mockCacheAPIWithCachedData, mockWSClient, ttl)
-    val mockWSRequestHolder = mock[WSRequestHolder]
+    val mockWSRequestHolder = mock[WSRequest]
     val jsonMessageString =
       """
          {
@@ -57,13 +59,13 @@ trait CacheManagerFixtures extends MockitoSugar {
 
     val jsonMessageJson = Json.parse(jsonMessageString).as[JsObject]
 
-    when(mockCacheAPIWithCachedData.get(Matchers.any()))
+    when(mockCacheAPIWithCachedData.get(ArgumentMatchers.any()))
       .thenReturn(Some(25))
 
 
-    when(mockCacheAPI.get(Matchers.any()))
+    when(mockCacheAPI.get(ArgumentMatchers.any()))
       .thenReturn(None)
-    when(mockWSClient.url(Matchers.any()))
+    when(mockWSClient.url(ArgumentMatchers.any()))
       .thenReturn(mockWSRequestHolder)
 
   }
@@ -91,4 +93,6 @@ class Response extends WSResponse {
   override def xml: Elem = ???
 
   override def json: JsValue = ???
+
+  override def bodyAsBytes: ByteString = ???
 }
