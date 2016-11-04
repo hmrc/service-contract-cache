@@ -113,7 +113,7 @@ class CacheManagerSpec extends FlatSpec
     }
   }
 
-  "CacheManager#get" should "return resource as a JSObject" in {
+  "CacheManager#get" should "return inner resource as a JSObject" in {
     when(mockWSRequestHolder.get())
       .thenReturn(Future.successful(new Response {
         override def status = 200
