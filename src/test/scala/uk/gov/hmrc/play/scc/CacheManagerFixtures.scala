@@ -47,8 +47,12 @@ trait CacheManagerFixtures extends MockitoSugar {
           "name": "foo",
           "age": 25,
           "isMinor": false,
-          "address": ["foo", "bar"]
-          }
+          "address": ["foo", "bar"],
+          "salary": {
+                    "amount" : "100",
+                    "curr" : "foo"
+                    }
+        }
       """
 
     implicit val fooBarReads: Reads[FooBar] = (
@@ -59,7 +63,7 @@ trait CacheManagerFixtures extends MockitoSugar {
 
     val jsonMessageJson = Json.parse(jsonMessageString).as[JsObject]
 
-    when(mockCacheAPIWithCachedData.get(ArgumentMatchers.any()))
+     when(mockCacheAPIWithCachedData.get(ArgumentMatchers.any()))
       .thenReturn(Some(25))
 
 

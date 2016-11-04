@@ -53,11 +53,14 @@ class CacheManager(restCacheEndPoint: String, cache: CacheApi, ws: WSClient, tim
               } else {
                 val value = response.json \ attribute.get match {
                   case JsDefined(res: JsValue) => {
+
+                    println("-------" + res)
+
                     res match {
+                      case jsObj: JsObject => Future.successful(jsObj.asInstanceOf[T])
                       case JsNumber(n) if n.isValidInt => Future.successful(n.bigDecimal.intValue())
                       case JsString(s) => Future.successful(s)
                       case JsBoolean(b) => Future.successful(b)
-                      case JsObject(c) => Future.successful(c)
                       case res => Future.failed(new UnSupportedDataType)
                     }
                   }
