@@ -108,10 +108,38 @@ class CacheManagerSpec extends FlatSpec
     val cacheResult = cacheManager.get[JsObject]("resource")
     whenReady(cacheResult) {
       res => {
-        println(res)
-        res shouldBe a [json.JsObject]
+        res shouldBe a[json.JsObject]
       }
     }
+  }
+
+  "CacheManager#get" should "return inner resource as a JSObject" in {
+    when(mockWSRequestHolder.get())
+      .thenReturn(Future.successful(new Response {
+        override def status = 200
+
+        override def json = jsonMessageJson
+      }))
+    val cacheResult = cacheManager.get[JsObject]("resource", Some("salary"))
+    whenReady(cacheResult) {
+      res => {
+        res shouldBe a[json.JsObject]
+      }
+    }
+  }
+
+  "CacheManager#get" should "return resource as UnSupportedDataType" in {
+    when(mockWSRequestHolder.get())
+      .thenReturn(Future.successful(new Response {
+        override def status = 200
+
+        override def json = jsonMessageJson
+      }))
+
+
+    val cacheResultException = cacheManager.get[Int]("resource", Some("fffooooo"))
+    cacheResultException.failed.futureValue shouldBe a[UnSupportedDataType]
+
   }
 
   "CacheManager#get" should "return body content when endpoint returned '200 - Ok'" in {

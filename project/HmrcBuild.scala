@@ -48,7 +48,7 @@ object HmrcBuild extends Build {
     Seq(
       // Semicolon-separated list of regexs matching classes to exclude
       ScoverageKeys.coverageExcludedPackages := "<empty>;.*BuildInfo*.",
-      ScoverageKeys.coverageMinimum := 95,
+      ScoverageKeys.coverageMinimum := 100,
       ScoverageKeys.coverageFailOnMinimum := true,
       ScoverageKeys.coverageHighlighting := true,
       parallelExecution in Test := false
