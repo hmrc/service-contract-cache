@@ -31,7 +31,6 @@ class CacheManager(restCacheEndPoint: String, cache: CacheApi, ws: WSClient, tim
 
   def get[T](resource: String, attribute: Option[String] = None)(implicit read: Reads[T]): Future[T] = {
     val cacheKey = restCacheEndPoint + "/" + resource + "/" + attribute.getOrElse("")
-    println("----" + cacheKey)
     cache.get(cacheKey) match {
       case Some(data) =>
         Future.successful(data.asInstanceOf[T])
