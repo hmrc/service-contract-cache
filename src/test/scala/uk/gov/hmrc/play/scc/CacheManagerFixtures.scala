@@ -64,11 +64,11 @@ trait CacheManagerFixtures extends MockitoSugar {
     val jsonMessageJson = Json.parse(jsonMessageString).as[JsObject]
 
      when(mockCacheAPIWithCachedData.get(ArgumentMatchers.any()))
-      .thenReturn(Some(25))
+      .thenReturn(25)
 
 
     when(mockCacheAPI.get(ArgumentMatchers.any()))
-      .thenReturn(None)
+      .thenReturn(null)
     when(mockWSClient.url(ArgumentMatchers.any()))
       .thenReturn(mockWSRequestHolder)
 
