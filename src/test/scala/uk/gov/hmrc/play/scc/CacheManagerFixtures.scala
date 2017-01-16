@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@ import akka.util.ByteString
 import org.mockito.{ArgumentMatchers, Matchers}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import play.cache.CacheApi
+import play.api.cache.CacheApi
 import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSCookie, WSRequest, WSResponse}
 import play.api.libs.functional.syntax._
-
+import scala.reflect._
 import scala.xml.Elem
+import scala.concurrent.duration._
 
 /**
   * Created by abhishek on 26/09/16.
@@ -37,7 +38,7 @@ trait CacheManagerFixtures extends MockitoSugar {
     val restCacheEndPoint = "http://www.example.com"
     val cacheKey = ""
     val mockWSClient = mock[WSClient]
-    val ttl = 10
+    val ttl = 10 seconds
     val cacheManager = new CacheManager(restCacheEndPoint, mockCacheAPI, mockWSClient, ttl)
     val cacheManagerWithCachedData = new CacheManager(restCacheEndPoint, mockCacheAPIWithCachedData, mockWSClient, ttl)
     val mockWSRequestHolder = mock[WSRequest]
@@ -63,12 +64,13 @@ trait CacheManagerFixtures extends MockitoSugar {
 
     val jsonMessageJson = Json.parse(jsonMessageString).as[JsObject]
 
-     when(mockCacheAPIWithCachedData.get(ArgumentMatchers.any()))
-      .thenReturn(25)
+//    when(mockCacheAPIWithCachedData.get[Int](ArgumentMatchers.any()))
+//      .thenReturn(Some(25))
 
 
-    when(mockCacheAPI.get(ArgumentMatchers.any()))
-      .thenReturn(null)
+
+//    when(mockCacheAPI.get(ArgumentMatchers.any()))
+//      .thenReturn(None)
     when(mockWSClient.url(ArgumentMatchers.any()))
       .thenReturn(mockWSRequestHolder)
 

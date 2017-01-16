@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.play.scc
 
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
@@ -24,6 +25,7 @@ import play.api.libs.json
 import play.api.libs.json.{JsNumber, JsObject}
 
 import scala.concurrent.Future
+import scala.reflect._
 
 /**
   * Created by abhishek on 23/09/16.
@@ -44,7 +46,13 @@ class CacheManagerSpec extends FlatSpec
         override def status = 500
       }))
 
-    val cacheResult = cacheManager.get[Int]("www.example.com", Some("key"))
+    implicit val myClassTag = classTag[Int]
+
+    when(mockCacheAPI.get("http://www.example.com/resource/key"))
+      .thenReturn(None)
+
+    val cacheResult = cacheManager.get[Int]("resource", Some("key"))
+
     cacheResult.failed.futureValue shouldBe a[EndPoint500Exception]
   }
 
@@ -53,8 +61,10 @@ class CacheManagerSpec extends FlatSpec
       .thenReturn(Future.successful(new Response {
         override def status = 404
       }))
-
-    val cacheResult = cacheManager.get[Int]("www.example.com", Some("key"))
+    implicit val myClassTag = classTag[Int]
+    when(mockCacheAPI.get("http://www.example.com/resource/key"))
+      .thenReturn(None)
+    val cacheResult = cacheManager.get[Int]("resource", Some("key"))
     cacheResult.failed.futureValue shouldBe a[EndPoint404Exception]
   }
 
@@ -63,8 +73,10 @@ class CacheManagerSpec extends FlatSpec
       .thenReturn(Future.successful(new Response {
         override def status = 204
       }))
-
-    val cacheResult = cacheManager.get[Int]("www.example.com", Some("key"))
+    implicit val myClassTag = classTag[Int]
+    when(mockCacheAPI.get("http://www.example.com/resource/key"))
+      .thenReturn(None)
+    val cacheResult = cacheManager.get[Int]("resource", Some("key"))
     cacheResult.failed.futureValue shouldBe a[EndPoint204Exception]
   }
 
@@ -75,8 +87,10 @@ class CacheManagerSpec extends FlatSpec
 
         override def body = "Service Unavailable"
       }))
-
-    val cacheResult = cacheManager.get[String]("resource", Some("key"))
+    implicit val myClassTag = classTag[Int]
+    when(mockCacheAPI.get("http://www.example.com/resource/key"))
+      .thenReturn(None)
+    val cacheResult = cacheManager.get[Int]("resource", Some("key"))
     cacheResult.failed.futureValue shouldBe a[EndPointAllOtherExceptions]
     cacheResult.failed.futureValue.getMessage shouldBe "Service Unavailable"
 
@@ -89,7 +103,12 @@ class CacheManagerSpec extends FlatSpec
 
         override def json = jsonMessageJson
       }))
-    val cacheResult = cacheManager.get[FooBar]("resource")(fooBarReads)
+
+    implicit val myClassTag = classTag[FooBar]
+    when(mockCacheAPI.get("http://www.example.com/resource/"))
+      .thenReturn(None)
+
+    val cacheResult = cacheManager.get[FooBar]("resource")(fooBarReads, classTag[FooBar])
     whenReady(cacheResult) {
       res => {
         res.age shouldBe 25
@@ -105,6 +124,11 @@ class CacheManagerSpec extends FlatSpec
 
         override def json = jsonMessageJson
       }))
+
+    implicit val myClassTag = classTag[JsObject]
+    when(mockCacheAPI.get("http://www.example.com/resource/"))
+      .thenReturn(None)
+
     val cacheResult = cacheManager.get[JsObject]("resource")
     whenReady(cacheResult) {
       res => {
@@ -120,6 +144,11 @@ class CacheManagerSpec extends FlatSpec
 
         override def json = jsonMessageJson
       }))
+
+    implicit val myClassTag = classTag[JsObject]
+    when(mockCacheAPI.get("http://www.example.com/resource/salary"))
+      .thenReturn(None)
+
     val cacheResult = cacheManager.get[JsObject]("resource", Some("salary"))
     whenReady(cacheResult) {
       res => {
@@ -136,7 +165,9 @@ class CacheManagerSpec extends FlatSpec
         override def json = jsonMessageJson
       }))
 
-
+    implicit val myClassTag = classTag[Int]
+    when(mockCacheAPI.get("http://www.example.com/resource/fffooooo"))
+      .thenReturn(None)
     val cacheResultException = cacheManager.get[Int]("resource", Some("fffooooo"))
     cacheResultException.failed.futureValue shouldBe a[UnSupportedDataType]
 
@@ -150,29 +181,44 @@ class CacheManagerSpec extends FlatSpec
         override def json = jsonMessageJson
       }))
 
-    val cacheResultInt = cacheManager.get[String]("resource", Some("name"))
-    whenReady(cacheResultInt) {
+    implicit val myClassTagString = classTag[String]
+    when(mockCacheAPI.get("http://www.example.com/resource/name"))
+      .thenReturn(None)
+    val cacheResultString = cacheManager.get[String]("resource", Some("name"))
+    whenReady(cacheResultString) {
       res => res shouldBe "foo"
     }
 
-    val cacheResultString = cacheManager.get[Int]("resource", Some("age"))
-    whenReady(cacheResultString) {
+    implicit val myClassTagInt = classTag[Int]
+    when(mockCacheAPI.get("http://www.example.com/resource/age")(myClassTagInt))
+      .thenReturn(None)
+    val cacheResultInt = cacheManager.get[Int]("resource", Some("age"))
+    whenReady(cacheResultInt) {
       res =>
         res shouldBe 25
     }
-
+    implicit val myClassTagBoolean = classTag[Boolean]
+    when(mockCacheAPI.get("http://www.example.com/resource/isMinor")(myClassTagBoolean))
+      .thenReturn(None)
     val cacheResultBoolean = cacheManager.get[Boolean]("resource", Some("isMinor"))
     whenReady(cacheResultBoolean) {
       res =>
         res shouldBe false
     }
 
+    when(mockCacheAPI.get("http://www.example.com/resource/address")(myClassTagInt))
+      .thenReturn(None)
     val cacheResultException = cacheManager.get[Int]("resource", Some("address"))
     cacheResultException.failed.futureValue shouldBe a[UnSupportedDataType]
 
   }
 
   "CacheManager#get" should "return content from Cache" in {
+
+    implicit val myClassTagInt = classTag[Int]
+    when(mockCacheAPIWithCachedData.get("http://www.example.com/resource/age")(myClassTagInt))
+      .thenReturn(Some(25))
+
     val cacheResult = cacheManagerWithCachedData.get[Int]("resource", Some("age"))
     whenReady(cacheResult) {
       res => res shouldBe 25
