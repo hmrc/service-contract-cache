@@ -216,12 +216,13 @@ class CacheManagerSpec extends FlatSpec
   "CacheManager#get" should "return content from Cache" in {
 
     implicit val myClassTagInt = classTag[Int]
-    when(mockCacheAPIWithCachedData.get("http://www.example.com/resource/age")(myClassTagInt))
+    when(mockCacheAPIWithCachedData.get[Int]("http://www.example.com/resource/age"))
       .thenReturn(Some(25))
 
     val cacheResult = cacheManagerWithCachedData.get[Int]("resource", Some("age"))
     whenReady(cacheResult) {
       res => res shouldBe 25
     }
+
   }
 }
