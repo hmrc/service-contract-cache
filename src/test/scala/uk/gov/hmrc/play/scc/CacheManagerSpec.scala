@@ -121,7 +121,6 @@ class CacheManagerSpec extends FlatSpec
     when(mockWSRequestHolder.get())
       .thenReturn(Future.successful(new Response {
         override def status = 200
-
         override def json = jsonMessageJson
       }))
 

@@ -20,10 +20,12 @@ import akka.util.ByteString
 import org.mockito.{ArgumentMatchers, Matchers}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
+import play.api.Application
 import play.api.cache.CacheApi
 import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSCookie, WSRequest, WSResponse}
 import play.api.libs.functional.syntax._
+
 import scala.reflect._
 import scala.xml.Elem
 import scala.concurrent.duration._
@@ -39,8 +41,13 @@ trait CacheManagerFixtures extends MockitoSugar {
     val cacheKey = ""
     val mockWSClient = mock[WSClient]
     val ttl = 10 seconds
-    val cacheManager = new CacheManager(restCacheEndPoint, mockCacheAPI, mockWSClient, ttl)
-    val cacheManagerWithCachedData = new CacheManager(restCacheEndPoint, mockCacheAPIWithCachedData, mockWSClient, ttl)
+
+    val cacheManager = new CacheManager(restCacheEndPoint, mockCacheAPI, mockWSClient, ttl, ("ACCEPT", "text/html"))
+    val cacheManagerWithCachedData = new CacheManager(restCacheEndPoint, mockCacheAPIWithCachedData,
+      mockWSClient, ttl, ("ACCEPT", "text/html"))
+
+
+    val mockWSRequestHolderTemp = mock[WSRequest]
     val mockWSRequestHolder = mock[WSRequest]
     val jsonMessageString =
       """
@@ -64,16 +71,11 @@ trait CacheManagerFixtures extends MockitoSugar {
 
     val jsonMessageJson = Json.parse(jsonMessageString).as[JsObject]
 
-//    when(mockCacheAPIWithCachedData.get[Int](ArgumentMatchers.any()))
-//      .thenReturn(Some(25))
-
-
-
-//    when(mockCacheAPI.get(ArgumentMatchers.any()))
-//      .thenReturn(None)
     when(mockWSClient.url(ArgumentMatchers.any()))
-      .thenReturn(mockWSRequestHolder)
+      .thenReturn(mockWSRequestHolderTemp)
 
+    when(mockWSRequestHolderTemp.withHeaders(ArgumentMatchers.any()))
+      .thenReturn(mockWSRequestHolder)
   }
 }
 
