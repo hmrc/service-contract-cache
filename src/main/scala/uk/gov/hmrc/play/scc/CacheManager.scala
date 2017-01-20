@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.play.scc
 
-import play.api.Application
 import play.api.cache.CacheApi
 import play.api.http.Status._
 import play.api.libs.json._
@@ -32,7 +31,7 @@ import scala.reflect.ClassTag
   * Created by abhishek on 23/09/16.
   */
 class CacheManager(restCacheEndPoint: String, cache: CacheApi, ws: WSClient, timeToLive: Duration,
-                   headers: (String, String)*) {
+                   headers: Seq[(String, String)]) {
 
   def get[T](resource: String, attribute: Option[String] = None)(implicit read: Reads[T], c: ClassTag[T]): Future[T] = {
 

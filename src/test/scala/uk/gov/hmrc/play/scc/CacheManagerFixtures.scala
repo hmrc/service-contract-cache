@@ -42,9 +42,9 @@ trait CacheManagerFixtures extends MockitoSugar {
     val mockWSClient = mock[WSClient]
     val ttl = 10 seconds
 
-    val cacheManager = new CacheManager(restCacheEndPoint, mockCacheAPI, mockWSClient, ttl, ("ACCEPT", "text/html"))
+    val cacheManager = new CacheManager(restCacheEndPoint, mockCacheAPI, mockWSClient, ttl, Seq(("ACCEPT", "text/html")))
     val cacheManagerWithCachedData = new CacheManager(restCacheEndPoint, mockCacheAPIWithCachedData,
-      mockWSClient, ttl, ("ACCEPT", "text/html"))
+      mockWSClient, ttl, Seq(("ACCEPT", "text/html")))
 
 
     val mockWSRequestHolderTemp = mock[WSRequest]
