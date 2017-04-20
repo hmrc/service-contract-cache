@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.play.scc
 
+import com.google.inject.Inject
 import play.api.cache.CacheApi
 import play.api.http.Status._
 import play.api.libs.json._
@@ -30,10 +31,10 @@ import scala.reflect.ClassTag
 /**
   * Created by abhishek on 23/09/16.
   */
-class CacheManager(restCacheEndPoint: String, cache: CacheApi, ws: WSClient, timeToLive: Duration,
+class CacheManager @Inject()(cache: CacheApi, ws: WSClient, timeToLive: Duration,
                    headers: Seq[(String, String)]) {
 
-  def get[T](resource: String, attribute: Option[String] = None)(implicit read: Reads[T], c: ClassTag[T]): Future[T] = {
+  def get[T](restCacheEndPoint: String, resource: String, attribute: Option[String] = None)(implicit read: Reads[T], c: ClassTag[T]): Future[T] = {
 
     val cacheKey = restCacheEndPoint + "/" + resource + "/" + attribute.getOrElse("")
 
