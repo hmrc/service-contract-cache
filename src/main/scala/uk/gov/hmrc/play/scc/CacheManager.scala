@@ -31,10 +31,10 @@ import scala.reflect.ClassTag
 /**
   * Created by abhishek on 23/09/16.
   */
-class CacheManager @Inject()(cache: CacheApi, ws: WSClient, timeToLive: Duration,
-                   headers: Seq[(String, String)]) {
+class CacheManager @Inject()(cache: CacheApi, ws: WSClient, headers: Seq[(String, String)]) {
 
-  def get[T](restCacheEndPoint: String, resource: String, attribute: Option[String] = None)(implicit read: Reads[T], c: ClassTag[T]): Future[T] = {
+  def get[T](restCacheEndPoint: String, timeToLive: Duration, resource: String, attribute: Option[String] = None)
+            (implicit read: Reads[T], c: ClassTag[T]): Future[T] = {
 
     val cacheKey = restCacheEndPoint + "/" + resource + "/" + attribute.getOrElse("")
 
