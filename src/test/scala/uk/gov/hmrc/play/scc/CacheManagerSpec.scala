@@ -51,7 +51,7 @@ class CacheManagerSpec extends FlatSpec
     when(mockCacheAPI.get("http://www.example.com/resource/key"))
       .thenReturn(None)
 
-    val cacheResult = cacheManager.get[Int]("resource", Some("key"))
+    val cacheResult = cacheManager.get[Int](restCacheEndPoint, ttl, "resource", Some("key"))
 
     cacheResult.failed.futureValue shouldBe a[EndPoint500Exception]
   }
@@ -64,7 +64,7 @@ class CacheManagerSpec extends FlatSpec
     implicit val myClassTag = classTag[Int]
     when(mockCacheAPI.get("http://www.example.com/resource/key"))
       .thenReturn(None)
-    val cacheResult = cacheManager.get[Int]("resource", Some("key"))
+    val cacheResult = cacheManager.get[Int](restCacheEndPoint, ttl, "resource", Some("key"))
     cacheResult.failed.futureValue shouldBe a[EndPoint404Exception]
   }
 
@@ -76,7 +76,7 @@ class CacheManagerSpec extends FlatSpec
     implicit val myClassTag = classTag[Int]
     when(mockCacheAPI.get("http://www.example.com/resource/key"))
       .thenReturn(None)
-    val cacheResult = cacheManager.get[Int]("resource", Some("key"))
+    val cacheResult = cacheManager.get[Int](restCacheEndPoint, ttl, "resource", Some("key"))
     cacheResult.failed.futureValue shouldBe a[EndPoint204Exception]
   }
 
@@ -90,7 +90,7 @@ class CacheManagerSpec extends FlatSpec
     implicit val myClassTag = classTag[Int]
     when(mockCacheAPI.get("http://www.example.com/resource/key"))
       .thenReturn(None)
-    val cacheResult = cacheManager.get[Int]("resource", Some("key"))
+    val cacheResult = cacheManager.get[Int](restCacheEndPoint, ttl, "resource", Some("key"))
     cacheResult.failed.futureValue shouldBe a[EndPointAllOtherExceptions]
     cacheResult.failed.futureValue.getMessage shouldBe "Service Unavailable"
 
@@ -108,7 +108,7 @@ class CacheManagerSpec extends FlatSpec
     when(mockCacheAPI.get("http://www.example.com/resource/"))
       .thenReturn(None)
 
-    val cacheResult = cacheManager.get[FooBar]("resource")(fooBarReads, classTag[FooBar])
+    val cacheResult = cacheManager.get[FooBar](restCacheEndPoint, ttl, "resource")(fooBarReads, classTag[FooBar])
     whenReady(cacheResult) {
       res => {
         res.age shouldBe 25
@@ -128,7 +128,7 @@ class CacheManagerSpec extends FlatSpec
     when(mockCacheAPI.get("http://www.example.com/resource/"))
       .thenReturn(None)
 
-    val cacheResult = cacheManager.get[JsObject]("resource")
+    val cacheResult = cacheManager.get[JsObject](restCacheEndPoint, ttl, "resource")
     whenReady(cacheResult) {
       res => {
         res shouldBe a[json.JsObject]
@@ -148,7 +148,7 @@ class CacheManagerSpec extends FlatSpec
     when(mockCacheAPI.get("http://www.example.com/resource/salary"))
       .thenReturn(None)
 
-    val cacheResult = cacheManager.get[JsObject]("resource", Some("salary"))
+    val cacheResult = cacheManager.get[JsObject](restCacheEndPoint, ttl, "resource", Some("salary"))
     whenReady(cacheResult) {
       res => {
         res shouldBe a[json.JsObject]
@@ -167,7 +167,7 @@ class CacheManagerSpec extends FlatSpec
     implicit val myClassTag = classTag[Int]
     when(mockCacheAPI.get("http://www.example.com/resource/fffooooo"))
       .thenReturn(None)
-    val cacheResultException = cacheManager.get[Int]("resource", Some("fffooooo"))
+    val cacheResultException = cacheManager.get[Int](restCacheEndPoint, ttl, "resource", Some("fffooooo"))
     cacheResultException.failed.futureValue shouldBe a[UnSupportedDataType]
 
   }
@@ -183,7 +183,7 @@ class CacheManagerSpec extends FlatSpec
     implicit val myClassTagString = classTag[String]
     when(mockCacheAPI.get("http://www.example.com/resource/name"))
       .thenReturn(None)
-    val cacheResultString = cacheManager.get[String]("resource", Some("name"))
+    val cacheResultString = cacheManager.get[String](restCacheEndPoint, ttl,  "resource", Some("name"))
     whenReady(cacheResultString) {
       res => res shouldBe "foo"
     }
@@ -191,7 +191,7 @@ class CacheManagerSpec extends FlatSpec
     implicit val myClassTagInt = classTag[Int]
     when(mockCacheAPI.get("http://www.example.com/resource/age")(myClassTagInt))
       .thenReturn(None)
-    val cacheResultInt = cacheManager.get[Int]("resource", Some("age"))
+    val cacheResultInt = cacheManager.get[Int](restCacheEndPoint, ttl, "resource", Some("age"))
     whenReady(cacheResultInt) {
       res =>
         res shouldBe 25
@@ -199,7 +199,7 @@ class CacheManagerSpec extends FlatSpec
     implicit val myClassTagBoolean = classTag[Boolean]
     when(mockCacheAPI.get("http://www.example.com/resource/isMinor")(myClassTagBoolean))
       .thenReturn(None)
-    val cacheResultBoolean = cacheManager.get[Boolean]("resource", Some("isMinor"))
+    val cacheResultBoolean = cacheManager.get[Boolean](restCacheEndPoint, ttl, "resource", Some("isMinor"))
     whenReady(cacheResultBoolean) {
       res =>
         res shouldBe false
@@ -207,7 +207,7 @@ class CacheManagerSpec extends FlatSpec
 
     when(mockCacheAPI.get("http://www.example.com/resource/address")(myClassTagInt))
       .thenReturn(None)
-    val cacheResultException = cacheManager.get[Int]("resource", Some("address"))
+    val cacheResultException = cacheManager.get[Int](restCacheEndPoint, ttl, "resource", Some("address"))
     cacheResultException.failed.futureValue shouldBe a[UnSupportedDataType]
 
   }
@@ -218,7 +218,7 @@ class CacheManagerSpec extends FlatSpec
     when(mockCacheAPIWithCachedData.get[Int]("http://www.example.com/resource/age"))
       .thenReturn(Some(25))
 
-    val cacheResult = cacheManagerWithCachedData.get[Int]("resource", Some("age"))
+    val cacheResult = cacheManagerWithCachedData.get[Int](restCacheEndPoint, ttl, "resource", Some("age"))
     whenReady(cacheResult) {
       res => res shouldBe 25
     }
