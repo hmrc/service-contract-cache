@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 
-import sbt._
 import sbt.Keys._
+import sbt._
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.PublishingSettings._
-import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object HmrcBuild extends Build {
 
   import uk.gov.hmrc._
-  import DefaultBuildSettings._
-  import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt}
-  import uk.gov.hmrc.PublishingSettings._
 
   val appName = "service-contract-cache"
 
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
     .settings(
-      scalaVersion := "2.11.8",
+      scalaVersion := "2.11.12",
       libraryDependencies ++= AppDependencies(),
-      crossScalaVersions := Seq("2.11.8"),
+      crossScalaVersions := Seq("2.11.12"),
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
         "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/"
@@ -44,7 +39,6 @@ object HmrcBuild extends Build {
     )
 
   lazy val scoverageSettings = {
-    import scoverage.ScoverageSbtPlugin._
     Seq(
       // Semicolon-separated list of regexs matching classes to exclude
       ScoverageKeys.coverageExcludedPackages := "<empty>;.*BuildInfo*.",
@@ -58,8 +52,8 @@ object HmrcBuild extends Build {
 
 private object AppDependencies {
 
-  import play.sbt.PlayImport._
   import play.core.PlayVersion
+  import play.sbt.PlayImport._
 
   val compile = Seq(
     "com.typesafe.play" %% "play" % PlayVersion.current,
@@ -76,10 +70,10 @@ private object AppDependencies {
     def apply() = new TestDependencies {
       override lazy val test = Seq(
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.scalatest" %% "scalatest" % "2.2.4" % scope,
-        "org.pegdown" % "pegdown" % "1.5.0" % scope,
-        "org.scalacheck" %% "scalacheck" % "1.12.2" % scope,
-        "org.mockito" % "mockito-core" % "2.2.8" % scope
+        "org.scalatest" %% "scalatest" % "3.0.8" % scope,
+        "org.pegdown" % "pegdown" % "1.6.0" % scope,
+        "org.scalacheck" %% "scalacheck" % "1.14.0" % scope,
+        "org.mockito" % "mockito-core" % "2.28.2" % scope
       )
     }.test
   }
