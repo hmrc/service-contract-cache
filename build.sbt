@@ -22,7 +22,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning
 val appName = "service-contract-cache"
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
+  .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .settings(
     scalaVersion := "2.11.12",
     libraryDependencies ++= AppDependencies(),
