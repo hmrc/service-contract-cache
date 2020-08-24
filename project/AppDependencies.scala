@@ -33,7 +33,7 @@ private object AppDependencies {
       "org.scalatest" %% "scalatest" % "3.0.8" % "test",
       "org.pegdown" % "pegdown" % "1.6.0" % "test",
       "org.scalacheck" %% "scalacheck" % "1.14.0" % "test",
-      "org.mockito" % "mockito-core" % "2.28.2" % "test"
+      "org.mockito" % "mockito-core" % "3.2.4" % "test"
     )
   }
 
