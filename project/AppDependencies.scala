@@ -23,7 +23,7 @@ private object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     "com.typesafe.play" %% "play" % PlayVersion.current,
-    cache,
+    ehcache,
     ws
   )
 

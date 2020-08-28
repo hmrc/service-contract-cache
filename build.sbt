@@ -24,7 +24,7 @@ val appName = "service-contract-cache"
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .settings(
-    scalaVersion := "2.11.12",
+    scalaVersion := "2.12.12",
     libraryDependencies ++= AppDependencies(),
     resolvers := Seq(
       Resolver.bintrayRepo("hmrc", "releases"),
