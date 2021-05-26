@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import play.api.cache.CacheApi
 import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
@@ -41,7 +40,7 @@ class CacheManager(restCacheEndPoint: String, cache: CacheApi, ws: WSClient, tim
 
     if (data == None) {
       ws.url(cacheKey)
-        .withHeaders(headers: _*)
+        .withHttpHeaders(headers: _*)
         .get()
         .flatMap {
           case response if response.status == INTERNAL_SERVER_ERROR =>
