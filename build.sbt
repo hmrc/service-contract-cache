@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys
