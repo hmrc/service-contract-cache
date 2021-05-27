@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.play.scc
 
-/**
-  * Created by abhishek on 26/09/16.
-  */
 class EndPoint500Exception extends util.control.NoStackTrace
 
 class EndPoint404Exception extends util.control.NoStackTrace
