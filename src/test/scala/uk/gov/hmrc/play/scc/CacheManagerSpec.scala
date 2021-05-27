@@ -16,14 +16,12 @@
 
 package uk.gov.hmrc.play.scc
 
-import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FlatSpec, Matchers}
 import play.api.libs.json
-import play.api.libs.json.{JsNumber, JsObject}
-
+import play.api.libs.json.JsObject
 import scala.concurrent.Future
 import scala.reflect._
 

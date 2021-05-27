@@ -24,7 +24,7 @@ val appName = "service-contract-cache"
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(SbtAutoBuildPlugin)
   .settings(
-    scalaVersion := "2.12.12",
+    scalaVersion := "2.12.13",
     libraryDependencies ++= AppDependencies(),
     scoverageSettings,
     majorVersion := 1

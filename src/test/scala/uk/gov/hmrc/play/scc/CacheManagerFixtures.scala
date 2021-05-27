@@ -18,18 +18,15 @@ package uk.gov.hmrc.play.scc
 
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
-import org.mockito.{ArgumentMatchers, Matchers}
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import play.api.Application
 import play.api.cache.CacheApi
+import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSCookie, WSRequest, WSResponse}
-import play.api.libs.functional.syntax._
-
-import scala.reflect._
-import scala.xml.Elem
 import scala.concurrent.duration._
+import scala.xml.Elem
 
 /**
   * Created by abhishek on 26/09/16.
@@ -75,7 +72,7 @@ trait CacheManagerFixtures extends MockitoSugar {
     when(mockWSClient.url(ArgumentMatchers.any()))
       .thenReturn(mockWSRequestHolderTemp)
 
-    when(mockWSRequestHolderTemp.withHeaders(ArgumentMatchers.any()))
+    when(mockWSRequestHolderTemp.withHttpHeaders(ArgumentMatchers.any()))
       .thenReturn(mockWSRequestHolder)
   }
 }
