@@ -18,8 +18,8 @@ package uk.gov.hmrc.play.scc
 
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FlatSpec, Matchers}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json
 import play.api.libs.json.JsObject
 import scala.concurrent.Future

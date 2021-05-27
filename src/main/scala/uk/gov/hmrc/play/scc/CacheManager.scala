@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.play.scc
 
-import play.api.cache.CacheApi
+import play.api.cache.SyncCacheApi
 import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws._
@@ -26,10 +26,8 @@ import scala.concurrent.duration.Duration
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
 
-/**
-  * Created by abhishek on 23/09/16.
-  */
-class CacheManager(restCacheEndPoint: String, cache: CacheApi, ws: WSClient, timeToLive: Duration,
+
+class CacheManager(restCacheEndPoint: String, cache: SyncCacheApi, ws: WSClient, timeToLive: Duration,
                    headers: Seq[(String, String)]) {
 
   def get[T](resource: String, attribute: Option[String] = None)(implicit read: Reads[T], c: ClassTag[T]): Future[T] = {

@@ -17,7 +17,6 @@
 import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.versioning.SbtGitVersioning
 
 val appName = "service-contract-cache"
 

@@ -20,21 +20,19 @@ import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
-import play.api.cache.CacheApi
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.cache.SyncCacheApi
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSCookie, WSRequest, WSResponse}
 import scala.concurrent.duration._
 import scala.xml.Elem
 
-/**
-  * Created by abhishek on 26/09/16.
-  */
+
 trait CacheManagerFixtures extends MockitoSugar {
   def fixture = new {
-    val mockCacheAPI = mock[CacheApi]
-    val mockCacheAPIWithCachedData = mock[CacheApi]
+    val mockCacheAPI = mock[SyncCacheApi]
+    val mockCacheAPIWithCachedData = mock[SyncCacheApi]
     val restCacheEndPoint = "http://www.example.com"
     val cacheKey = ""
     val mockWSClient = mock[WSClient]
