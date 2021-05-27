@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,26 +18,21 @@ package uk.gov.hmrc.play.scc
 
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
-import org.mockito.{ArgumentMatchers, Matchers}
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
-import play.api.Application
-import play.api.cache.CacheApi
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.cache.SyncCacheApi
+import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSCookie, WSRequest, WSResponse}
-import play.api.libs.functional.syntax._
-
-import scala.reflect._
-import scala.xml.Elem
 import scala.concurrent.duration._
+import scala.xml.Elem
 
-/**
-  * Created by abhishek on 26/09/16.
-  */
+
 trait CacheManagerFixtures extends MockitoSugar {
   def fixture = new {
-    val mockCacheAPI = mock[CacheApi]
-    val mockCacheAPIWithCachedData = mock[CacheApi]
+    val mockCacheAPI = mock[SyncCacheApi]
+    val mockCacheAPIWithCachedData = mock[SyncCacheApi]
     val restCacheEndPoint = "http://www.example.com"
     val cacheKey = ""
     val mockWSClient = mock[WSClient]
@@ -75,7 +70,7 @@ trait CacheManagerFixtures extends MockitoSugar {
     when(mockWSClient.url(ArgumentMatchers.any()))
       .thenReturn(mockWSRequestHolderTemp)
 
-    when(mockWSRequestHolderTemp.withHeaders(ArgumentMatchers.any()))
+    when(mockWSRequestHolderTemp.withHttpHeaders(ArgumentMatchers.any()))
       .thenReturn(mockWSRequestHolder)
   }
 }

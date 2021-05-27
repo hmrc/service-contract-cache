@@ -29,11 +29,11 @@ private object AppDependencies {
 
   object Test {
     def apply(): Seq[ModuleID] = Seq(
-      "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",
-      "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-      "org.pegdown" % "pegdown" % "1.6.0" % "test",
-      "org.scalacheck" %% "scalacheck" % "1.14.0" % "test",
-      "org.mockito" % "mockito-core" % "3.2.4" % "test"
+      "com.typesafe.play"       %% "play-test"            % PlayVersion.current % "test",
+      "org.scalatestplus.play"  %% "scalatestplus-play"   % "3.1.3"             % "test",
+      "org.pegdown"             % "pegdown"               % "1.6.0"             % "test",
+      "org.scalacheck"          %% "scalacheck"           % "1.14.0"            % "test",
+      "org.mockito"             % "mockito-core"          % "3.2.4"             % "test"
     )
   }
 

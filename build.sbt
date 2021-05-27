@@ -17,19 +17,14 @@
 import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.versioning.SbtGitVersioning
 
 val appName = "service-contract-cache"
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
+  .enablePlugins(SbtAutoBuildPlugin)
   .settings(
-    scalaVersion := "2.12.12",
+    scalaVersion := "2.12.13",
     libraryDependencies ++= AppDependencies(),
-    resolvers := Seq(
-      Resolver.bintrayRepo("hmrc", "releases"),
-      "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/"
-    ),
     scoverageSettings,
     majorVersion := 1
   )
