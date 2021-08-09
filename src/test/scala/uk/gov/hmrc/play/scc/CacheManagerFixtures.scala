@@ -77,7 +77,7 @@ trait CacheManagerFixtures extends MockitoSugar {
 
 case class FooBar(name: String, age: Int, isMinor: Boolean)
 
-class Response extends WSResponse {
+trait Response extends WSResponse {
   override def allHeaders: Map[String, Seq[String]] = ???
 
   override def underlying[T]: T = ???
@@ -103,4 +103,6 @@ class Response extends WSResponse {
   override def headers: Map[String, Seq[String]] = ???
 
   override def bodyAsSource: Source[ByteString, _] = ???
+
+  def uri = ???
 }
