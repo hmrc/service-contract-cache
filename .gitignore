@@ -19,5 +19,9 @@ dist
 *.iws
 /.metals
 /.vscode
+.bloop
+.metals
+.vscode
+metals.sbt
 
     
