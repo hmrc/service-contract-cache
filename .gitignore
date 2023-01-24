@@ -23,6 +23,6 @@ dist
 .metals
 .vscode
 metals.sbt
-.bsp/json.sbt
+.bsp
 
     
