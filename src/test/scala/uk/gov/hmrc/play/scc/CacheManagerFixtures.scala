@@ -19,7 +19,8 @@ package uk.gov.hmrc.play.scc
 import org.apache.pekko.stream.scaladsl.Source
 import org.apache.pekko.util.ByteString
 import org.mockito.ArgumentMatchers
-import org.mockito.scalatest.MockitoSugar
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.cache.SyncCacheApi
 import play.api.libs.functional.syntax._
 import play.api.libs.json._

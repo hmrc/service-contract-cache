@@ -16,18 +16,17 @@
 
 package uk.gov.hmrc.play.scc
 
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.mockito.scalatest.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json
 import play.api.libs.json.JsObject
+
 import scala.concurrent.Future
 import scala.reflect._
 
-/**
-  * Created by abhishek on 23/09/16.
-  */
 class CacheManagerSpec extends AnyFlatSpec
   with Matchers
   with ScalaFutures
@@ -174,7 +173,6 @@ class CacheManagerSpec extends AnyFlatSpec
     when(mockWSRequestHolder.get())
       .thenReturn(Future.successful(new Response {
         override def status = 200
-
         override def json = jsonMessageJson
       }))
 
