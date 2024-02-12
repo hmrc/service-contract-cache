@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,17 @@
 
 package uk.gov.hmrc.play.scc
 
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.mockito.scalatest.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json
 import play.api.libs.json.JsObject
+
 import scala.concurrent.Future
 import scala.reflect._
 
-/**
-  * Created by abhishek on 23/09/16.
-  */
 class CacheManagerSpec extends AnyFlatSpec
   with Matchers
   with ScalaFutures

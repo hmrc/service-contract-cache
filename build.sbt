@@ -1,20 +1,20 @@
-import scoverage.ScoverageKeys
+import scoverage.ScoverageKeys._
 
 val appName = "service-contract-cache"
+
+ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / majorVersion := 2
+
+lazy val scoverageSettings = Seq(
+  coverageExcludedPackages := "<empty>;.*BuildInfo*.",
+  coverageMinimumStmtTotal := 100,
+  coverageFailOnMinimum := true,
+  coverageHighlighting := true
+)
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(SbtAutoBuildPlugin)
   .settings(
-    scalaVersion := "2.13.10",
     libraryDependencies ++= AppDependencies(),
-    majorVersion := 1
   )
   .settings(scoverageSettings:_*)
-
-lazy val scoverageSettings = Seq(
-  // Semicolon-separated list of regexs matching classes to exclude
-  ScoverageKeys.coverageExcludedPackages := "<empty>;.*BuildInfo*.",
-  ScoverageKeys.coverageMinimum := 100,
-  ScoverageKeys.coverageFailOnMinimum := true,
-  ScoverageKeys.coverageHighlighting := true
-)
